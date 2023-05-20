@@ -1,0 +1,6 @@
+open power shell
+D:
+cd .\Save\Java\GasSellManagementGCS200162\
+git add .
+git commit -m '....'
+git push -u origin main
