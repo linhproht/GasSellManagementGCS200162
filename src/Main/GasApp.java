@@ -24,7 +24,6 @@ public class GasApp extends JFrame{
     private JComboBox comboBoxGasType;
     private JTextField txtNameUser;
     private JTable table1;
-    private JButton totalRevenueInDayButton;
     private JTextField txtPrice;
     private JButton updateGasPriceButton;
     private JComboBox cbType;
