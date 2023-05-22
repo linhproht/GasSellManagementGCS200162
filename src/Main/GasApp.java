@@ -18,8 +18,6 @@ public class GasApp extends JFrame{
     private JButton addButton;
     private JTextField txtID;
     private JTextField txtDate;
-    private JCheckBox ckboxUp;
-    private JCheckBox ckboxDown;
     private JButton resetButton;
     private JComboBox comboBoxGasType;
     private JTextField txtNameUser;
@@ -37,7 +35,7 @@ public class GasApp extends JFrame{
     String filePatch2 = "price.dat";
 
     int currentRow;
-    Double[] price2;
+    Double[] price2 = new Double[5];
 
     public GasApp(String title, String name, Login aThis){
         super(title);
@@ -53,11 +51,12 @@ public class GasApp extends JFrame{
         gasList = new ArrayList<>();
         boolean file = loadFile();
         if(file){
+
             fillToTable();
         }else{
             showMess("Nothing to do in here");
         }
-
+        loadFilePrice();
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,8 +84,7 @@ public class GasApp extends JFrame{
         cbType.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                int index = cbType.getSelectedIndex();
-                txtPrice.setText(String.valueOf(price2[index]));
+                select();
 
             }
         });
@@ -113,6 +111,11 @@ public class GasApp extends JFrame{
                 fillToTable();
             }
         });
+    }
+
+    private void select() {
+        int index = cbType.getSelectedIndex();
+        txtPrice.setText(String.valueOf(price2[index]));
     }
 
     private  void sort(){
@@ -145,7 +148,7 @@ public class GasApp extends JFrame{
         g.setGasType(gastype);
         Double price = Double.parseDouble(txtPrice.getText());
         g.setPrice(price);
-        showMess(String.valueOf(id));
+        showMess("Update Successfully");
 
         fillToTable();
 
@@ -153,7 +156,7 @@ public class GasApp extends JFrame{
     }
 
     private void delete() {
-        int re = JOptionPane.showConfirmDialog(this, ""+" Are u sure about that", "Djt me m muon xoa a",
+        int re = JOptionPane.showConfirmDialog(this, ""+" Are u sure about that", "Delete Message",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         if(re==JOptionPane.YES_OPTION){
@@ -166,13 +169,12 @@ public class GasApp extends JFrame{
         txtID.setText("");
         txtDate.setText("");
 
-        ckboxUp.setSelected(false);
-        ckboxDown.setSelected(false);
 
         cbModel.setSelectedItem("Choose your gas type");
         cbType.setModel(cbModel);
 
         loadFile();
+        loadFilePrice();
     }
 
     private void addGas() {
@@ -193,7 +195,6 @@ public class GasApp extends JFrame{
         String date = txtDate.getText();
         double total = 0.0;
         String name = "";
-        String img = "";
 
         String type = cbType.getSelectedItem().toString();
         GasSellManagement g = new GasSellManagement(type, id, price, date, total, name);
@@ -219,11 +220,15 @@ public class GasApp extends JFrame{
         if(XFile.readObject(filePatch)==null){
             return false;
         }
+        gasList = (ArrayList<GasSellManagement>)
+                XFile.readObject(filePatch);
+        return true;
+    }
+
+    private boolean loadFilePrice() {
         if(XFile.readObject(filePatch2)==null){
             return false;
         }
-        gasList = (ArrayList<GasSellManagement>)
-                XFile.readObject(filePatch);
         price2 = (Double[]) XFile.readObject(filePatch2);
         return true;
     }
